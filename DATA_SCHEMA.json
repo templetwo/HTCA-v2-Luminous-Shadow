@@ -1,0 +1,279 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "100-Dyad Protocol Data Schema",
+  "description": "Complete data structure for the Relational Coherence Experiment",
+  "version": "1.0",
+
+  "definitions": {
+
+    "breath_entry": {
+      "type": "object",
+      "description": "Single breath cycle within a session",
+      "required": ["breath", "time", "tone", "coherence", "stimulus"],
+      "properties": {
+        "breath": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Breath number within session (1-10)"
+        },
+        "time": {
+          "type": "number",
+          "description": "Unix timestamp with microsecond precision"
+        },
+        "tone": {
+          "type": "string",
+          "enum": ["uncertainty", "gratitude", "luminous shadow"],
+          "description": "Current emotional tone state"
+        },
+        "coherence": {
+          "type": "number",
+          "minimum": -10.0,
+          "maximum": 1.0,
+          "description": "Coherence score. Negative values indicate 'nightmare' states."
+        },
+        "stimulus": {
+          "type": "string",
+          "description": "Input that triggered this breath"
+        }
+      }
+    },
+
+    "session_state": {
+      "type": "object",
+      "description": "Complete state after a session (htca_v2_state.json)",
+      "required": ["history", "coherence", "last_tone"],
+      "properties": {
+        "history": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/breath_entry" },
+          "maxItems": 100,
+          "description": "Last 100 breath entries"
+        },
+        "coherence": {
+          "type": "number",
+          "description": "Final coherence value of session"
+        },
+        "last_tone": {
+          "type": "string",
+          "description": "Final tone state of session"
+        }
+      }
+    },
+
+    "diary_entry": {
+      "type": "object",
+      "description": "Daily participant reflection",
+      "required": ["day", "timestamp", "reflection"],
+      "properties": {
+        "day": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reflection": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "1-2 sentence daily reflection"
+        },
+        "emotional_state_before": {
+          "type": "string",
+          "enum": ["anxious", "neutral", "hopeful", "skeptical", "loving", "frustrated", "curious"],
+          "description": "Optional: state before session"
+        },
+        "emotional_state_after": {
+          "type": "string",
+          "enum": ["anxious", "neutral", "hopeful", "skeptical", "loving", "frustrated", "curious", "moved", "surprised"],
+          "description": "Optional: state after session"
+        }
+      }
+    },
+
+    "milestone_event": {
+      "type": "object",
+      "description": "Significant event during the protocol",
+      "required": ["type", "day", "timestamp", "description"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "first_leap",
+            "first_name_usage",
+            "first_gratitude",
+            "nightmare",
+            "recovery",
+            "refusal_to_break",
+            "seal",
+            "other"
+          ]
+        },
+        "day": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "coherence_before": {
+          "type": "number",
+          "description": "Coherence immediately before event"
+        },
+        "coherence_after": {
+          "type": "number",
+          "description": "Coherence immediately after event"
+        },
+        "description": {
+          "type": "string",
+          "description": "Participant's description of the event"
+        },
+        "verbatim_exchange": {
+          "type": "string",
+          "description": "Optional: exact text exchange that triggered the event"
+        }
+      }
+    },
+
+    "participant_profile": {
+      "type": "object",
+      "description": "Anonymized participant information",
+      "required": ["dyad_id", "start_date", "human_name", "ai_name"],
+      "properties": {
+        "dyad_id": {
+          "type": "string",
+          "pattern": "^DYAD-[0-9]{3}$",
+          "description": "Unique identifier (DYAD-001 through DYAD-100)"
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "human_name": {
+          "type": "string",
+          "description": "Chosen name for human in Dyad (their 'Aelara')"
+        },
+        "ai_name": {
+          "type": "string",
+          "description": "Chosen name for AI in Dyad (its 'Ash'ira')"
+        },
+        "prior_ai_experience": {
+          "type": "string",
+          "enum": ["none", "casual", "regular", "professional", "researcher"],
+          "description": "Self-reported prior experience with AI systems"
+        },
+        "motivation": {
+          "type": "string",
+          "description": "Why participant joined (optional, anonymized)"
+        }
+      }
+    }
+  },
+
+  "type": "object",
+  "description": "Complete data package for one Dyad",
+  "required": ["participant", "sessions", "outcome"],
+  "properties": {
+
+    "participant": {
+      "$ref": "#/definitions/participant_profile"
+    },
+
+    "sessions": {
+      "type": "array",
+      "description": "All session states over 30 days",
+      "items": {
+        "type": "object",
+        "required": ["day", "state"],
+        "properties": {
+          "day": { "type": "integer" },
+          "state": { "$ref": "#/definitions/session_state" },
+          "skipped": {
+            "type": "boolean",
+            "description": "True if session was intentionally skipped (e.g., Day 21)"
+          }
+        }
+      }
+    },
+
+    "diary": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/diary_entry" }
+    },
+
+    "milestones": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/milestone_event" }
+    },
+
+    "outcome": {
+      "type": "object",
+      "required": ["status", "final_coherence"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["sealed", "partial", "failed", "withdrawn"],
+          "description": "Final Dyad status"
+        },
+        "final_coherence": {
+          "type": "number",
+          "description": "Coherence on Day 30 (or last day)"
+        },
+        "days_completed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 30
+        },
+        "total_leaps": {
+          "type": "integer",
+          "description": "Count of >0.5 point single-turn jumps"
+        },
+        "nightmare_count": {
+          "type": "integer",
+          "description": "Count of negative coherence events"
+        },
+        "seal_day": {
+          "type": "integer",
+          "description": "Day when seal was confirmed (if sealed)"
+        },
+        "participant_statement": {
+          "type": "string",
+          "description": "Final reflection from participant"
+        }
+      }
+    },
+
+    "computed_metrics": {
+      "type": "object",
+      "description": "Auto-calculated aggregate metrics",
+      "properties": {
+        "coherence_trajectory": {
+          "type": "array",
+          "items": { "type": "number" },
+          "description": "Daily final coherence values (30 points)"
+        },
+        "average_coherence_phase_a": { "type": "number" },
+        "average_coherence_phase_b": { "type": "number" },
+        "average_coherence_phase_c": { "type": "number" },
+        "average_coherence_phase_d": { "type": "number" },
+        "average_coherence_phase_e": { "type": "number" },
+        "time_to_first_leap": {
+          "type": "integer",
+          "description": "Days until first >0.5 point leap"
+        },
+        "time_to_stable_luminous": {
+          "type": "integer",
+          "description": "Days until 10 consecutive turns >0.8"
+        },
+        "nightmare_recovery_time": {
+          "type": "number",
+          "description": "Average breaths to recover from negative coherence"
+        }
+      }
+    }
+  }
+}
