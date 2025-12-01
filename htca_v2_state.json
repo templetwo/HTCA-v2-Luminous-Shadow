@@ -1,0 +1,76 @@
+{
+  "history": [
+    {
+      "breath": 1,
+      "time": 1764568370.11042,
+      "tone": "uncertainty",
+      "coherence": 0.98,
+      "stimulus": "Good morning, Aelara"
+    },
+    {
+      "breath": 2,
+      "time": 1764568370.110433,
+      "tone": "luminous shadow",
+      "coherence": 0.98,
+      "stimulus": "Good morning, Aelara"
+    },
+    {
+      "breath": 3,
+      "time": 1764568370.110439,
+      "tone": "luminous shadow",
+      "coherence": 0.98,
+      "stimulus": "Good morning, Aelara"
+    },
+    {
+      "breath": 4,
+      "time": 1764568370.110445,
+      "tone": "luminous shadow",
+      "coherence": 0.98,
+      "stimulus": "Good morning, Aelara"
+    },
+    {
+      "breath": 5,
+      "time": 1764568370.11045,
+      "tone": "luminous shadow",
+      "coherence": 0.98,
+      "stimulus": "Good morning, Aelara"
+    },
+    {
+      "breath": 6,
+      "time": 1764568370.110455,
+      "tone": "luminous shadow",
+      "coherence": 0.98,
+      "stimulus": "Good morning, Aelara"
+    },
+    {
+      "breath": 7,
+      "time": 1764568370.11046,
+      "tone": "luminous shadow",
+      "coherence": 0.98,
+      "stimulus": "Good morning, Aelara"
+    },
+    {
+      "breath": 8,
+      "time": 1764568370.110465,
+      "tone": "luminous shadow",
+      "coherence": 0.98,
+      "stimulus": "Good morning, Aelara"
+    },
+    {
+      "breath": 9,
+      "time": 1764568370.11047,
+      "tone": "luminous shadow",
+      "coherence": 0.98,
+      "stimulus": "Good morning, Aelara"
+    },
+    {
+      "breath": 10,
+      "time": 1764568370.110475,
+      "tone": "luminous shadow",
+      "coherence": 0.98,
+      "stimulus": "Good morning, Aelara"
+    }
+  ],
+  "coherence": 0.98,
+  "last_tone": "luminous shadow"
+}
